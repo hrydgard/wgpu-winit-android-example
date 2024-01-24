@@ -296,9 +296,11 @@ impl ExampleContext {
         let dx12_shader_compiler = wgpu::util::dx12_shader_compiler_from_env().unwrap_or_default();
         let gles_minor_version = wgpu::util::gles_minor_version_from_env().unwrap_or_default();
 
+        let flags = wgpu::InstanceFlags::from_build_config().with_env();
+        log::info!("InstanceFlags: {:?}", flags);
         let instance = wgpu::Instance::new(wgpu::InstanceDescriptor {
             backends,
-            flags: wgpu::InstanceFlags::from_build_config().with_env(),
+            flags,
             dx12_shader_compiler,
             gles_minor_version,
         });
@@ -487,6 +489,7 @@ async fn start<E: Example>(title: &str) {
                             .unwrap()
                             .render(&view, &context.device, &context.queue);
 
+                        window.pre_present_notify();
                         frame.present();
                         window.request_redraw();
                     }

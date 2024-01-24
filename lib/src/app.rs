@@ -86,7 +86,7 @@ impl Example for App {
         let mut encoder =
             device.create_command_encoder(&wgpu::CommandEncoderDescriptor { label: None });
         {
-            let t = (self.last_time.elapsed().as_secs_f64() / 5.0).sin();
+            let t = (self.last_time.elapsed().as_secs_f64() / 5.0).sin() * 0.5 + 0.5;
             let mut rpass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
                 label: None,
                 color_attachments: &[Some(wgpu::RenderPassColorAttachment {
