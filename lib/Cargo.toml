@@ -5,7 +5,7 @@ authors = [
     "msiglreith <m.siglreith@gmail.com>",
     "Andra Antariksa <andra.antariksa@gmail.com>",
 ]
-edition = "2018"
+edition = "2021"
 resolver = "2"
 
 [lib]

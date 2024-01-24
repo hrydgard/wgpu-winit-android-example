@@ -89,38 +89,6 @@ fn init_logger() {
     }
 }
 
-/*
-struct EventLoopWrapper {
-    event_loop: EventLoop<()>,
-    window: Arc<Window>,
-}
-
-impl EventLoopWrapper {
-    pub fn new(title: &str) -> Self {
-        let event_loop = EventLoop::new().unwrap();
-        let mut builder = winit::window::WindowBuilder::new();
-        #[cfg(target_arch = "wasm32")]
-        {
-            use wasm_bindgen::JsCast;
-            use winit::platform::web::WindowBuilderExtWebSys;
-            let canvas = web_sys::window()
-                .unwrap()
-                .document()
-                .unwrap()
-                .get_element_by_id("canvas")
-                .unwrap()
-                .dyn_into::<web_sys::HtmlCanvasElement>()
-                .unwrap();
-            builder = builder.with_canvas(Some(canvas));
-        }
-        builder = builder.with_title(title);
-        let window = Arc::new(builder.build(&event_loop).unwrap());
-
-        Self { event_loop, window }
-    }
-}
- */
-
 pub fn loop_and_window(title: &str) -> (EventLoop<()>, Arc<Window>) {
     let event_loop = EventLoop::new().unwrap();
     let mut builder = winit::window::WindowBuilder::new();
@@ -138,7 +106,9 @@ pub fn loop_and_window(title: &str) -> (EventLoop<()>, Arc<Window>) {
             .unwrap();
         builder = builder.with_canvas(Some(canvas));
     }
-    builder = builder.with_title(title);
+    builder = builder
+        .with_title(title)
+        .with_inner_size(winit::dpi::PhysicalSize::new(720, 1280));
     let window = Arc::new(builder.build(&event_loop).unwrap());
 
     (event_loop, window)
