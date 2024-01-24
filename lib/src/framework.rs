@@ -51,8 +51,7 @@ pub trait Example: 'static + Sized {
     fn render(&mut self, view: &wgpu::TextureView, device: &wgpu::Device, queue: &wgpu::Queue);
 }
 
-pub fn loop_and_window(title: &str) -> (EventLoop<()>, Arc<Window>) {
-    let event_loop = EventLoop::new().unwrap();
+pub fn create_window(event_loop: &EventLoop<()>, title: &str) -> Arc<Window> {
     let mut builder = winit::window::WindowBuilder::new();
     #[cfg(target_arch = "wasm32")]
     {
@@ -71,9 +70,7 @@ pub fn loop_and_window(title: &str) -> (EventLoop<()>, Arc<Window>) {
     builder = builder
         .with_title(title)
         .with_inner_size(winit::dpi::PhysicalSize::new(720, 1280));
-    let window = Arc::new(builder.build(&event_loop).unwrap());
-
-    (event_loop, window)
+    Arc::new(builder.build(&event_loop).unwrap())
 }
 
 /// Wrapper type which manages the surface and surface configuration.
@@ -324,8 +321,8 @@ impl FrameCounter {
     }
 }
 
-async fn start<E: Example>(title: &str) {
-    let (event_loop, window) = loop_and_window(title);
+async fn start<E: Example>(event_loop: EventLoop<()>, title: &str) {
+    let window = create_window(&event_loop, title);
     let mut surface = SurfaceWrapper::new();
     let context = ExampleContext::init_async::<E>(&mut surface, window.clone()).await;
     let mut frame_counter = FrameCounter::new();
@@ -432,12 +429,12 @@ async fn start<E: Example>(title: &str) {
     );
 }
 
-pub fn run<E: Example>(title: &'static str) {
+pub fn run<E: Example>(event_loop: EventLoop<()>, title: &'static str) {
     cfg_if::cfg_if! {
         if #[cfg(target_arch = "wasm32")] {
-            wasm_bindgen_futures::spawn_local(async move { start::<E>(title).await })
+            wasm_bindgen_futures::spawn_local(async move { start::<E>(event_loop, title).await })
         } else {
-            pollster::block_on(start::<E>(title));
+            pollster::block_on(start::<E>(event_loop, title));
         }
     }
 }

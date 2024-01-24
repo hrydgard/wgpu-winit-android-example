@@ -1,5 +1,9 @@
+use winit::event_loop::EventLoop;
 #[cfg(target_os = "android")]
-use winit::platform::android::activity::AndroidApp;
+use winit::{
+    event_loop::EventLoopBuilder, platform::android::activity::AndroidApp,
+    platform::android::EventLoopBuilderExtAndroid,
+};
 
 mod app;
 mod framework;
@@ -8,13 +12,17 @@ mod framework;
 #[cfg(target_os = "android")]
 #[no_mangle]
 fn android_main(app: AndroidApp) {
-    panic!("changed");
     std::env::set_var("RUST_BACKTRACE", "1");
-    crate::framework::run::<app::App>("App");
+    let event_loop = EventLoopBuilder::new()
+        .with_android_app(app)
+        .build()
+        .unwrap(); //with_android_app
+    crate::framework::run::<app::App>(event_loop, "App");
 }
 
 #[allow(dead_code)]
 fn main() {
     std::env::set_var("RUST_BACKTRACE", "1");
-    crate::framework::run::<app::App>("App");
+    let event_loop = EventLoop::new().unwrap(); //with_android_app
+    crate::framework::run::<app::App>(event_loop, "App");
 }
