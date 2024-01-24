@@ -51,7 +51,7 @@ android {
 cargo {
     module  = "../lib"
     libname = "wgpu_android_lib"
-    targets = listOf("x86_64", "x86", "arm", "arm64")
+    targets = listOf("arm64")
 }
 
 tasks.whenTaskAdded {
