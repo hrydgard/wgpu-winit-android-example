@@ -8,12 +8,13 @@ mod framework;
 #[cfg(target_os = "android")]
 #[no_mangle]
 fn android_main(app: AndroidApp) {
-    use log::LevelFilter;
-    android_logger::init_once(android_logger::Config::default().with_max_level(LevelFilter::Trace));
+    panic!("changed");
+    std::env::set_var("RUST_BACKTRACE", "1");
     crate::framework::run::<app::App>("App");
 }
 
 #[allow(dead_code)]
 fn main() {
+    std::env::set_var("RUST_BACKTRACE", "1");
     crate::framework::run::<app::App>("App");
 }
